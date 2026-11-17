@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  {% if grade > 80 %}
+  <div class="alert alert-success" role="alert">
+    <strong>Congratulations, {{ user.first_name }}!</strong> You have passed the exam and scored {{ grade }}/100.
+  </div>
+  {% else %}
+  <div class="alert alert-danger" role="alert">
+    <strong>Sorry, {{ user.first_name }}.</strong> You did not pass. Score: {{ grade }}/100.
+  </div>
+  {% endif %}
+
+  <h3>Results Breakdown</h3>
+  {% for question in course.question_set.all %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ question.content }}</h5>
+        <ul class="list-group">
+          {% for choice in question.choice_set.all %}
+            {% if choice in selected_choices %}
+              {% if choice.is_correct %}
+                <li class="list-group-item list-group-item-success">Selected (Correct): {{ choice.content }}</li>
+              {% else %}
+                <li class="list-group-item list-group-item-danger">Selected (Wrong): {{ choice.content }}</li>
+              {% endif %}
+            {% else %}
+              {% if choice.is_correct %}
+                <li class="list-group-item list-group-item-warning">Not selected (Correct): {{ choice.content }}</li>
+              {% else %}
+                <li class="list-group-item">Not selected: {{ choice.content }}</li>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
